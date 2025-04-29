@@ -12,7 +12,15 @@ import (
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Print(">> ")
+		wd, err := os.Getwd()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+		hn, err := os.Hostname()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+		fmt.Print(wd, hn, ">> ")
 		// Read the keyboad input.
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -51,12 +59,11 @@ func execInput(input string) error {
 	// Set the correct output device.
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
-
 	// Execute the command and return the error.
 	return cmd.Run()
 	/** TODO: Modify the input indicator:
-	add the working directory
-	add the machine’s hostname
-	add the current user
+	add the working directory >> done //ugly
+	add the machine’s hostname >> done // ok
+	add the current user //
 	Browse your input history with the up/down keys*/
 }
