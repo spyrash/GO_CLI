@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/user"
 	"strings"
 )
 
@@ -20,7 +21,18 @@ func StartShell() {
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 		}
-		fmt.Print(wd, hn, ">> ")
+		wdArray := strings.Split(wd, "/")
+		wdToPrint := strings.Join(wdArray, "/")
+		if len(wdArray) > 3 {
+			lastThree := wdArray[len(wdArray)-3:]
+			joined := strings.Join(lastThree, "/")
+			wdToPrint = joined
+		}
+		user, err := user.Current()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+		fmt.Print(wdToPrint, " on ", hn, " user: ", user.Name, ">> ")
 		// Read the keyboad input.
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -61,9 +73,6 @@ func execInput(input string) error {
 	cmd.Stdout = os.Stdout
 	// Execute the command and return the error.
 	return cmd.Run()
-	/** TODO: Modify the input indicator:
-	add the working directory >> done //ugly
-	add the machine’s hostname >> done // ok
-	add the current user //
+	/** TODO:
 	Browse your input history with the up/down keys*/
 }
